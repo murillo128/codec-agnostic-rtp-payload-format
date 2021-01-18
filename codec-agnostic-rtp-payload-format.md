@@ -59,7 +59,22 @@ The spatial layers must be sent in ascending order, with the same RTP timestamp,
 Layer selection
 =======================
 
-The information required to perform the layer selection on an SFU is included in the Dependency descriptor which is available to SFUs even if the payload is encrypted.
+SFUs need to have a basic understanding of each frame they receive so they can decide to forward it or not and to which endpoint.
+They might need similar information to support media content recording.
+This information is either generic to a group of frame (called a stream hereafter) or specific to each frame.
+
+The information is transmitted as a RTP header extension as the RTP packet payload should be treated as opaque by the SFU.
+This is especially necessary if the payload is end-to-end encrypted.
+The amount of information should be limited to what is strictly necessary to the SFU task since it is not always as trusted as individual peers.
+
+For audio, configuration information such as Opus TOC might be useful.
+For video, the following configuration information might include:
+- Stream configuration information: resolution, quality, frame rate...
+- Codec specific configuration information: codec profile like profile_idc...
+- Frame specific information: whether the stream is decodable when starting from this frame, whether the frame is skippable...
+
+For video content, this information can be sent using a Dependency Descriptor header extension.
+In that case, the first RTP packet of the frame will have its start_of_frame equal to 1 and the last packet will have its end_of_frame equal to 1.
 
 SDP negotiation
 =======================
