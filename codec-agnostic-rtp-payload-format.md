@@ -62,6 +62,39 @@ The spatial layers are sent in ascending order, with the same RTP timestamp, and
 If the application wants to encrypt content, the application will split media content into frames before encryption.
 Each frame will be encrypted independently, using {{SFrame}} for instance, and transmitted by the packetizer.
 
+Payload multiplexing
+=======================
+
+In order to reduce the number of payload type codes on the SDP exchange, a single payload type code for the generic packetization will be used for each media type. That requires to also carry the original payload type code for the negotiated media format that the frame belongs to.
+
+The associated payload type will be sent in a header extension. The payload of associated payload headerr extension element can be encoded using either the one-byte or two-byte header defined in [[RFC5285]].
+
+Figures 1 and 2 show sample encoding with each of these header formats.
+
+```
+                    0                   1
+                    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                   |  ID   | len=0 |S|     APT     |
+                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```
+Figure 1: Sample Associated Payload Type Encoding Using the One-Byte Header Format
+
+```
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |      ID       |     len=1     |S|     APT     |    0 (pad)    |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```
+Figure 2: Sample Associated Payload Type Encoding Using the Two-Byte Header Format
+
+The APT value is the value is the payload type code of the associated format passed to the rtp generic packetizer before any transformation is applied. The S bit indicates if the media stream can be forwarded safely starting from this RTP packet. Typically, it will be set to 1 on the first rtp packet of an I-Frame video frame and in all rtp audio packets.
+
+Receivers MUST be ready to receive RTP packets with different associated payload types in the same way it would receive different payload type codes on the RTP packets.
+
+The URI for declaring this header extension in an extmap attribute is "urn:ietf:params:rtp-hdrext:associated-payload-type".
+   
 Layer selection
 =======================
 
