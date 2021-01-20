@@ -19,7 +19,7 @@ author:
 -
   ins: Y. Fablet
   name: Youenn Fablet
-  org: Apple
+  org: Apple Inc.
   email: youenn@apple.com 
   
 -
