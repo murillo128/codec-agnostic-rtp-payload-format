@@ -65,9 +65,9 @@ Each frame will be encrypted independently, using {{SFrame}} for instance, and t
 Payload multiplexing
 =======================
 
-In order to reduce the number of payload type codes on the SDP exchange, a single payload type code for the generic packetization will be used for each media type. That requires to also carry the original payload type code for the negotiated media format that the frame belongs to.
+In order to reduce the number of payload type codes on the SDP exchange, a single payload type code for the generic packetization can be used for each media type. That requires to identify the original payload type code for the negotiated media format that the frame belongs to.
 
-The associated payload type will be sent in a header extension. The payload of associated payload headerr extension element can be encoded using either the one-byte or two-byte header defined in [[RFC5285]].
+The associated payload type will be sent in a header extension. The payload of associated payload header extension element can be encoded using either the one-byte or two-byte header defined in [[RFC5285]].
 
 Figures 1 and 2 show sample encoding with each of these header formats.
 
