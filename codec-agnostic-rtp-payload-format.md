@@ -92,33 +92,102 @@ In that case, the first RTP packet of the frame will have its start_of_frame equ
 
 SDP negotiation
 =======================
-Each video format will require a different payload type so they can be negotiated by both peers.
 
-fmtp codec includes the FOURCC of the codec.
+A payload type format and the payload type codec and the associated payload type header extension MUST be negotiated in the SDP O/A for each media type in order to be able to use the RTP generic packetization. Only the payload types negotiated are allowed to be used as associated payload types.
 
-no need to negotiate the standard packetization for each coded, they are independent
+RTX and FEC procedures applies normally.
 
-rtx and fec are negotiated normally
-
-Q: should we define what are the negotiated parameters for each codec? should we reuse mpeg/dash ones?
-
-
-m=video 9 UDP/TLS/RTP/SAVPF 98 100 99 101
+```
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=setup:actpass
+a=mid:1
+a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+a=extmap:2 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
+a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
+a=extmap:4 urn:ietf:params:rtp-hdrext:associated-payload-type
+a=sendrecv
+a=rtpmap:96 vp9/90000
+a=rtpmap:97 vp8/90000
 a=rtpmap:98 generic/90000
-a=fmtp:98 codec=vp09,profile-id=0
 a=rtpmap:99 rtx/90000
-a=fmtp:99 apt=98
-a=rtpmap:100 generic/90000
-a=fmtp:100 codec=vp09,profile-id=2
+a=fmtp:99 apt=96
+a=rtpmap:100 rtx/90000
+a=fmtp:100 apt=97
 a=rtpmap:101 rtx/90000
-a=fmtp:101 apt=100
+a=fmtp:101 apt=98
+```
 
+Q: What frequency should we use for audio? One per the different frequencies of each audio codec?
 
 Security Considerations
 =======================
 
 IANA Considerations
 ===================
+
+Two new media subtypes have been registered with IANA, as described in this section.  This registration is done using the registration template {{REF}} and following [[RFC3555]].
+
+## Registration of audio/generic
+
+   Type name: audio
+
+   Subtype name: generic
+
+   Required parameters: none
+
+   Optional parameters: none
+
+   Encoding considerations: This format is framed (see Section 4.8 in the template document [3]) and contains binary data.
+
+   Security considerations: TBD.
+
+   Interoperability considerations: TBD
+
+   Published specification: TBD.
+
+   Applications that use this media type: TBD.
+   
+   Additional information: none
+
+   Intended usage: COMMON
+
+   Restrictions on usage: TBD
+
+   Author:
+
+   Change controller:
+      
+# Registration of video/generic
+
+   Type name: video
+
+   Subtype name: generic
+
+   Required parameters: none
+
+   Optional parameters: none
+
+   Encoding considerations: This format is framed (see Section 4.8 in the template document [3]) and contains binary data.
+
+   Security considerations: TBD.
+
+   Interoperability considerations: TBD
+
+   Published specification: TBD.
+
+   Applications that use this media type: TBD.
+   
+   Additional information: none
+
+   Intended usage: COMMON
+
+   Restrictions on usage: TBD
+
+   Author:
+
+   Change controller:
 
 
 --- back
