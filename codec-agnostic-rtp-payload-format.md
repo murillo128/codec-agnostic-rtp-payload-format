@@ -55,7 +55,7 @@ Introduction
 
 The objective of this spec is to create a generic RTP packetization format that can be used with any video codec or encrypted content and that allows SFUs to perform layer selection without requiring access to the codec payload.
 
-Media paquitization and depaquetization
+Media paquetization and depaquetization
 =======================
 
 As per {{RFC7656}} the generic packetizer will define a Media Packetizer allows to transfor a single Encoded Stream into one or several RTP packets  
@@ -114,6 +114,8 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer allows 
 This generic packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
 
 The generic packetizer only supports SRST modes when Scalale Video Coding (SVC) is in use.
+
+The other elements on the Media Chain, like RTP-Based Redundancy, are not affected by the usage of the generic packetizer. 
 
  
 RTP packetization
