@@ -55,7 +55,7 @@ Introduction
 
 The objective of this spec is to create a generic RTP packetization format that can be used with any video codec or encrypted content and that allows SFUs to perform layer selection without requiring access to the codec payload.
 
-Media paquetization and depaquetization
+Media packetization and depacketization
 =======================
 
 As per {{RFC7656}} the generic packetizer will define a Media Packetizer allows to transfor a single Encoded Stream into one or several RTP packets  
