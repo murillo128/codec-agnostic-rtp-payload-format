@@ -59,7 +59,7 @@ Media packetization and depacketization
 =======================
 
 As per {{RFC7656}} the generic packetizer will define a Media Packetizer that transforms a single Encoded Stream into one or several RTP packets.
- which can be therefore be processed by a Media Depacketizer to reconstruct the Encoded Stream.
+These RTP packets are sent over the wire to a Media Depacketizer that will reconstruct the Encoded Stream.
  
   
  ```
