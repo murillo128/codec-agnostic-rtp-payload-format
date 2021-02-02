@@ -113,7 +113,7 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer allows 
  
 This generic packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
 
-The generic packetizer only supports SRST modes when Scalale Video Coding (SVC) is in use.
+The generic packetizer only supports Single RTP stream on a Single media Transport (SRST) when Scalale Video Coding (SVC) is in use.
 
 The other elements on the Media Chain, like RTP-Based Redundancy, are not affected by the usage of the generic packetizer. 
 
