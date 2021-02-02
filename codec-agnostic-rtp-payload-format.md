@@ -35,6 +35,7 @@ normative:
   RFC3550:
   RFC3711:
   RFC4566:
+  RFC7656:
   RFC8285:
 
 informative:
@@ -54,6 +55,69 @@ Introduction
 
 The objective of this spec is to create a generic RTP packetization format that can be used with any video codec or encrypted content and that allows SFUs to perform layer selection without requiring access to the codec payload.
 
+Media packetization and depacketization
+=======================
+
+As per {{RFC7656}} the generic packetizer will define a Media Packetizer that transforms a single Encoded Stream into one or several RTP packets.
+These RTP packets are sent over the wire to a Media Depacketizer that will reconstruct the Encoded Stream.
+ 
+  
+ ```
+                Physical Stimulus
+                      |
+                      V
+           +----------------------+
+           |     Media Capture    |
+           +----------------------+
+                      |
+                 Raw Stream
+                      V
+           +----------------------+
+           |     Media Source     |<- Synchronization Timing
+           +----------------------+
+                      |
+                Source Stream
+                      V
+           +----------------------+
+           |    Media Encoder     |
+           +----------------------+
+                      |
+                Encoded Stream 
+                      V
+           +----------------------+
+           |    Media Encryptor   |
+           +----------------------+
+                      |
+                Encrypted Stream    +------------+
+                      V             |            V
+           +----------------------+ | +----------------------+
+           |   Media Packetizer   | | | RTP-Based Redundancy |
+           +----------------------+ | +----------------------+
+                      |             |            |
+                      +-------------+  Redundancy RTP Stream
+               Source RTP Stream                 |
+                      V                          V
+           +----------------------+   +----------------------+
+           |  RTP-Based Security  |   |  RTP-Based Security  |
+           +----------------------+   +----------------------+
+                      |                          |
+              Secured RTP Stream   Secured Redundancy RTP Stream
+                      V                          V
+           +----------------------+   +----------------------+
+           |   Media Transport    |   |   Media Transport    |
+           +----------------------+   +----------------------+
+
+             Figure 1: Sender Side Concepts in the Media Chain with Application-level Media Encryption 
+             
+```
+ 
+This generic packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
+
+The generic packetizer only supports Single RTP stream on a Single media Transport (SRST) when Scalale Video Coding (SVC) is in use.
+
+The other elements on the Media Chain, like RTP-Based Redundancy, are not affected by the usage of the generic packetizer. 
+
+ 
 RTP packetization
 =======================
 
