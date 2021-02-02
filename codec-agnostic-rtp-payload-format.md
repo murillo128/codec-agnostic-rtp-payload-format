@@ -107,7 +107,7 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer that tr
            |   Media Transport    |   |   Media Transport    |
            +----------------------+   +----------------------+
 
-             Figure 1: Sender Side Concepts in the Media Chain with Encryption 
+             Figure 1: Sender Side Concepts in the Media Chain with Application-level Media Encryption 
              
 ```
  
