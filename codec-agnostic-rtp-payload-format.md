@@ -46,26 +46,38 @@ informative:
   RFC6464:
   RFC6465:
   RFC6904:
+  RFC6184:
   SFrame:
+    target: https://tools.ietf.org/html/draft-omara-sframe
+    title: Secure Frame (SFrame)
+  WebRTCInsertableStreams:
+    target: https://w3c.github.io/webrtc-insertable-streams
+    title: WebRTC Insertable Media using Streams
 
 --- abstract
 
-
+RTP Media Chains usually rely on piping encoder output directly to packetizers. Media packetization formats often support a specific codec format and optimize RTP packets generation accordingly.
+With the development of Selective Forward Unit (SFU) solutions, RTP Media Chains used in WebRTC solutions are increasingly relying on application-specific transforms that seat between encoder and packetizer on one end and between depacketizer and decoder on the other end. These transforms are typically encrypting media content so that the media content is not readable from the SFU, for instance using {{SFrame}} or {{WebRTCInsertableStreams}}.
+In that context, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format.
+This document provides a solution to that problem by describing a generic RTP packetization format that can be used on any media content, and how to negotiate use of this format.
+This document also describes a solution to allow SFUs to continue performing packet routing on top of this generic RTP packetization format.
 
 --- middle
 
 Introduction
 ============
 
-The objective of this spec is to create a generic RTP packetization format that can be used with any audio or video codec or encrypted content and that allows SFUs to perform routing and layer selection without requiring access to the codec payload.
+As per Figure 1 of {{RFC7656}}, a Media Packetizer transforms a single Encoded Stream into one or several RTP packets.
+The Encoded Stream is coming straight from the Media Encoder and is expected to follow the format produced by the Media Encoder.
+A number of Media Packetizer formats have been designed to process a specific format produced by Media Encoder.
+For instance {{6184}} is dedicated to the processing of content produced by H.264 Media Encoders, and generates packets following NALUs organization.
 
-Media packetization and depacketization
-=======================
+WebRTC applications are increasingly deploying end-to-end encryption solutions on top of RTP Media Chains.
+End-to-end encryption is implemented by inserting application-specific Media Transformers between Media Encoder and Media Packetizer on the sending side, and between Media Depacketizer and Media Decoder on the receiving side, as described in Figure 1 and Figure 2.
+To support end-to-end encryption, Media Transformers can use the {{SFrame}} format.
+In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting Javacript code provided by web pages.
 
-As per {{RFC7656}} the generic packetizer will define a Media Packetizer that transforms a single Encoded Stream into one or several RTP packets.
-
-  
- ```
+```
                 Physical Stimulus
                       |
                       V
@@ -76,7 +88,7 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer that tr
                  Raw Stream
                       V
            +----------------------+
-           |     Media Source     |<- Synchronization Timing
+           |     Media Source     |<-- Synchronization Timing
            +----------------------+
                       |
                 Source Stream
@@ -88,10 +100,10 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer that tr
                 Encoded Stream 
                       V
            +----------------------+
-           |    Media Encryptor   |
-           +----------------------+
+           |   Media Transformer  |<-- NEW: application-specific transform
+           +----------------------+         (e.g. SFrame Encryption)
                       |
-                Encrypted Stream    +------------+
+              Transformed Stream    +------------+
                       V             |            V
            +----------------------+ | +----------------------+
            |   Media Packetizer   | | | RTP-Based Redundancy |
@@ -109,13 +121,11 @@ As per {{RFC7656}} the generic packetizer will define a Media Packetizer that tr
            +----------------------+   +----------------------+
            |   Media Transport    |   |   Media Transport    |
            +----------------------+   +----------------------+
-
-             Figure 1: Sender Side Concepts in the Media Chain with Application-level Media Encryption 
-             
 ```
+             Figure 1: Sender Side Concepts in the Media Chain
+             With Application-level Media Transform
 
 These RTP packets are sent over the wire to a receiver media chain matching the sender side, reaching the Media Depacketizer that will reconstruct the Encoded Stream before passing it to the Media Decoder.
-
 ```
           +----------------------+   +----------------------+
           |   Media Transport    |   |   Media Transport    |
@@ -141,11 +151,11 @@ These RTP packets are sent over the wire to a receiver media chain matching the 
           |  Media Depacketizer  |
           +----------------------+
                      |
-           Received Encrypted Stream
+         Received Transformed Stream
                      V
           +----------------------+
-          |    Media Decrypter   |          
-          +----------------------+
+          |   Media Transformer  |<-- NEW: application-specific transform
+          +----------------------+         (e.g. SFrame Decryption)
                      |
            Received Encoded Stream
                      V
@@ -167,16 +177,27 @@ These RTP packets are sent over the wire to a receiver media chain matching the 
                      |
                      V
              Physical Stimulus
-
-            Figure 2: Receiver Side Concepts of the Media Chain with Application-level Media Encryption 
-
 ```
+             Figure 2: Receiver Side Concepts in the Media Chain
+             With Application-level Media Transform
  
 This generic packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
 
-The generic packetizer only supports Single RTP stream on a Single media Transport (SRST) when Scalale Video Coding (SVC) is in use.
+Given the use of post-encoder application-specific transforms, the whole Media Chain needs to be made aware of it.
+This includes the sender post-transform Media Chain, Media Transport intermediaries (SFUs typically) and receiver pre-transform Media Chain.
 
-The other elements on the Media Chain, like RTP-Based Redundancy, are not affected by the usage of the generic packetizer. 
+As these transforms can alter Encoded Streams in any possible way, the use of codec-specific Media Packetizers like {{RFC6184}} on Transformed Stream may be suboptimal on sender side.
+It may also be problematic on the receiving side in case codec-specific processing is done prior the Media Transformer.
+Media Transport intermediaries are often looking at the Media Content itself to fuel their packet selection algorithms.
+
+Goals
+=====
+
+The objective of this document is to support inserting any application-specific transform between encoders and packetizers in the Media Chain.
+For that purpose, this document will:
+1. Provide a generic packetization format that supports any media content (compressed audio, compressed video, encrypted content...) that allows reuse of existing RTP mechanisms in place in WebRTC applications such as RTX, RED or FEC.
+2. Provide a way to negotiate use of the generic packetization format between sender and receiver, with minimum impact on existing negotiation approaches.
+3. Provide a side-channel information so that network intermediaries (SFU in particular) can do their existing packet routing strategies without inspecting the media content.
 
 RTP Packetization
 =================
