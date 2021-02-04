@@ -63,8 +63,7 @@ Media packetization and depacketization
 =======================
 
 As per {{RFC7656}} the generic packetizer will define a Media Packetizer that transforms a single Encoded Stream into one or several RTP packets.
-These RTP packets are sent over the wire to a Media Depacketizer that will reconstruct the Encoded Stream.
- 
+
   
  ```
                 Physical Stimulus
@@ -113,6 +112,64 @@ These RTP packets are sent over the wire to a Media Depacketizer that will recon
 
              Figure 1: Sender Side Concepts in the Media Chain with Application-level Media Encryption 
              
+```
+
+These RTP packets are sent over the wire to a receiver media chain matching the sender side, reaching the Media Depacketizer that will reconstruct the Encoded Stream before passing it to the Media Decoder.
+
+```
+          +----------------------+   +----------------------+
+          |   Media Transport    |   |   Media Transport    |
+          +----------------------+   +----------------------+
+            Received |                 Received | Secured
+            Secured RTP Stream       Redundancy RTP Stream
+                     V                          V
+          +----------------------+   +----------------------+
+          | RTP-Based Validation |   | RTP-Based Validation |
+          +----------------------+   +----------------------+
+                     |                          |
+            Received RTP Stream   Received Redundancy RTP Stream
+                     |                          |
+                     |     +--------------------+
+                     V     V
+          +----------------------+
+          |   RTP-Based Repair   |
+          +----------------------+
+                     |
+            Repaired RTP Stream
+                     V
+          +----------------------+
+          |  Media Depacketizer  |
+          +----------------------+
+                     |
+           Received Encrypted Stream
+                     V
+          +----------------------+
+          |    Media Decrypter   |          
+          +----------------------+
+                     |
+           Received Encoded Stream
+                     V
+          +----------------------+
+          |    Media Decoder     |
+          +----------------------+
+                     |
+           Received Source Stream
+                     V
+          +----------------------+
+          |      Media Sink      |--> Synchronization Information
+          +----------------------+
+                     |
+            Received Raw Stream
+                     V
+          +----------------------+
+          |     Media Render     |
+          +----------------------+
+                     |
+                     V
+             Physical Stimulus
+
+            Figure 2: Receiver Side Concepts of the Media Chain with Application-level Media Encryption 
+
 ```
  
 This generic packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
