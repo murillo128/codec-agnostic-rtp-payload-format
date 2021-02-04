@@ -306,18 +306,12 @@ In case a SVC codec is used, each spatial layer will be processed as an independ
 Redundand Audio Data Techniques
 -------------------------------
 
+As defined in {{RFC7656}} RTP-based redundancy is defined here as a transformation that generates redundant or repair packets sent out as a Redundancy RTP Stream to mitigate Network Transport impairments, like packet loss and delay. 
+ 
 {{RFC2198}} defines a payload format for sending the same audio data encoded multiple times at different quality levels.
 This allows to use a lower quality encoding of the audio data, should the higher quality encoding of the audio data is lost during the transmission.
 
-RTP Media Chains can integrate RED as a codec and apply transforms after the RED encoder and before the RED decoder.
-In that case, given the payload type of RED blocks will be transformed, a SFU may not be able to modify it before sending it to other recipients.
-It is important in that case for the SFU to negotiate the same payload type used as the RED block payload type between sender and all receivers.
-
-RTP Media Chains can also be designed so that RED sits after the post-encoder transform and before the pre-decoder transform.
-In that case, the SFU is able to update RED block payload types.
-
-If RTP header extensions are used to provide information on the media content itself, these RTP header extensions can be sent as RTP header extensions of the RED packet.
-These RTP header extensions are expected to be applicable to any of the audio data encodings transmitted as part of the RED packet.
+If a Media Transformation is in use, both the primary and redundant encoding must be transformed independently and the redundant packet created normally. As the RTP headers present in the redundant packet are only applicable to the primary encoding, if the payload type for a redundant encoding block is mapped to the generic packetizer, the value of the associated payload type for the primary encoding is applied to the redundant encoding block as well.
 
 Security Considerations
 =======================
