@@ -254,7 +254,7 @@ As defined in {{RFC7656}} RTP-based redundancy is defined here as a transformati
 {{RFC2198}} defines a payload format for sending the same audio data encoded multiple times at different quality levels.
 This allows to use a lower quality encoding of the audio data, should the higher quality encoding of the audio data is lost during the transmission.
 
-If a Media Transformation is in use, both the primary and redundant encoding must be transformed independently and the redundant packet created normally. As the RTP headers present in the redundant packet are only applicable to the primary encoding, if the payload type for a redudant encoding block is mapped to the generic packetizer, then the value of the associated payload type for the primary encoding is applied for the redundant encoding as well.
+If a Media Transformation is in use, both the primary and redundant encoding must be transformed independently and the redundant packet created normally. As the RTP headers present in the redundant packet are only applicable to the primary encoding, if the payload type for a redundant encoding block is mapped to the generic packetizer, the value of the associated payload type for the primary encoding is applied to the redundant encoding block as well.
 
 Security Considerations
 =======================
