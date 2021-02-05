@@ -346,6 +346,13 @@ If a Media Transformation is in use, both the primary and redundant encoding mus
 Security Considerations
 =======================
 
+RTP packets using the payload format defined in this specification are subject to the general security considerations discussed in [[RFC3350]].
+It is not expected that the proposed solutions (generic packetization and header extension) presented in this document can create new security threats.
+The use and implementation of RTP Media Chains containing Media Transformers needs to be done carerefully.
+It is important to refer to the security considerations discussed in {{SFrame}} and {{WebRTCInsertableStreams}}.
+In particular Media Transformers on the receiver side need to be prepared to receive arbitrary content, like decoders already do.
+Similarly, since Media Transformers can be implemented as JavaScript in browsers, RTP Packetizers should be prepared to receive arbitrary content.
+
 IANA Considerations
 ===================
 
