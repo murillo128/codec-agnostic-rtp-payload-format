@@ -259,10 +259,14 @@ The URI for declaring this header extension in an extmap attribute is "urn:ietf:
 SDP Negotiation
 ===============
 
-A payload type for the negotiated format, the generic payload type and the associated payload type header extension MUST be negotiated in the SDP O/A for each media type in order to be able to use the RTP generic packetization.
-Only the payload types negotiated are allowed to be used as associated payload types.
-Figure 5 illustrates a SDP that negotiates video using either VP8 or VP9 codecs with the possibility to use the generic packetization.
-RTX and FEC are also negotiated and will be applied normally.
+To use the RTP generic packetization, the SDP Offer/Answer exchange MUST negotiate:
+- The payload type of the negotiated codec format
+- The generic payload type
+- The associated payload type header extension
+
+Only the negotiated payload types are allowed to be used as associated payload types.
+Figure 5 illustrates a SDP that negotiates exchange of video using either VP8 or VP9 codecs with the possibility to use the generic packetization.
+In this example, RTX is also negotiated and will be applied normally on each associated payload type.
 
 ```
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
@@ -285,9 +289,7 @@ a=fmtp:100 apt=97
 a=rtpmap:101 rtx/90000
 a=fmtp:101 apt=98
 ```
-Figure 5: SDP example negotiating the generic payload type and related header extension
-
-Q: What frequency should we use for audio? One per the different frequencies of each audio codec?
+Figure 5: SDP example negotiating the generic payload type and related header extension for video
 
 SFU Packet Selection
 ====================
