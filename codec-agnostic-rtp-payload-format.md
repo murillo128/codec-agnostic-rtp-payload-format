@@ -76,7 +76,7 @@ For instance {{6184}} is dedicated to the processing of content produced by H.26
 WebRTC applications are increasingly deploying end-to-end encryption solutions on top of RTP Media Chains.
 End-to-end encryption is implemented by inserting application-specific Media Transformers between Media Encoder and Media Packetizer on the sending side, and between Media Depacketizer and Media Decoder on the receiving side, as described in Figure 1 and Figure 2.
 To support end-to-end encryption, Media Transformers can use the {{SFrame}} format.
-In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting Javacript code provided by web pages.
+In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting JavaScript code provided by web pages.
 
 ```
                 Physical Stimulus
@@ -215,7 +215,7 @@ In the case of a video codec supporting spatial scalability, each spatial layer 
 
 When the packetizer receives a frame from the application, it MUST fragment the frame content in multiple RTP packets to ensure packets do not exceed the network maximum transmission unit. The content of the frame will be treated as a binary blob by the packetizer, so the decision about the boundaries of each fragment is decided arbitrarily by the packetizer. The packetizer or any relying server MUST NOT modify the frame content and concatenating the RTP payload of the RTP packets for each frame MUST produce the exact binary content of the input frame content.
 
-The marker bit of each RTP packet in a frame MUST be set according to the audio and video profiles specified in [[rfc3551]].
+The marker bit of each RTP packet in a frame MUST be set according to the audio and video profiles specified in [[RFC3551]].
 
 The spatial layer frames are sent in ascending order, with the same RTP timestamp, and only the last RTP packet of the last spatial layer frame will have the marker bit set to 1.
 
@@ -224,7 +224,7 @@ Payload Multiplexing
 
 In order to reduce the number of payload type in the SDP exchange, a single payload type code for the generic packetization can be used for all negotiated media formats.
 That requires to identify the original payload type code of the frame negotiated media format, called the associated payload type (APT) hereunder.
-The APT value is the payload type code of the associated format passed to the rtp generic packetizer before any transformation is applied.
+The APT value is the payload type code of the associated format passed to the generic Media Packetizer before any transformation is applied.
 
 The APT value is sent in a dedicated header extension.
 The payload of this header extension can be encoded using either the one-byte or two-byte header defined in [[RFC5285]].
@@ -250,9 +250,9 @@ Figure 4: Frame Associated Payload Type Encoding Using the Two-Byte Header Forma
 
 The APT value is the associated payload type value.
 The S bit indicates if the media stream can be forwarded safely starting from this RTP packet.
-Typically, it will be set to 1 on the first rtp packet of an I-Frame video frame and in all rtp audio packets.
+Typically, it will be set to 1 on the first RTP packet of an intra video frame and in all RTP audio packets.
 
-Receivers MUST be ready to receive RTP packets with different associated payload types in the same way it would receive different payload type codes on the RTP packets.
+Receivers MUST be ready to receive RTP packets with different associated payload types in the same way they would receive different payload type codes on the RTP packets.
 
 The URI for declaring this header extension in an extmap attribute is "urn:ietf:params:rtp-hdrext:associated-payload-type".
 
@@ -289,26 +289,6 @@ Figure 5: SDP example negotiating the generic payload type and related header ex
 
 Q: What frequency should we use for audio? One per the different frequencies of each audio codec?
 
-Layer Selection
-===============
-
-SFUs need to have a basic understanding of each frame they receive so they can decide to forward it or not and to which endpoint.
-They might need similar information to support media content recording.
-This information is either generic to a group of frame (called a stream hereafter) or specific to each frame.
-
-The information is transmitted as a RTP header extension as the RTP packet payload should be treated as opaque by the SFU.
-This is especially necessary if the payload is transformed by {{SFrame}} to support end-to-end encryption.
-The amount of information should be limited to what is strictly necessary to the SFU task since it is not always as trusted as individual peers.
-
-For audio, configuration information such as Opus TOC might be useful.
-For video, the following configuration information might include:
-- Stream configuration information: resolution, quality, frame rate...
-- Codec specific configuration information: codec profile like profile_idc...
-- Frame specific information: whether the stream is decodable when starting from this frame, whether the frame is skippable...
-
-For video content, this information can be sent using a Dependency Descriptor header extension.
-In that case, the first RTP packet of the frame will have its start_of_frame equal to 1 and the last packet will have its end_of_frame equal to 1.
-
 SFU Packet Selection
 ====================
 
@@ -321,7 +301,7 @@ This is especially necessary if the payload is end-to-end encrypted.
 The amount of information should be limited to what is strictly necessary to the SFU task since it is not always as trusted as individual peers.
 
 For audio, configuration information such as Opus TOC might be useful.
-For video, the following configuration information might include:
+For video, configuration information might include:
 - Stream configuration information: resolution, quality, frame rate...
 - Codec specific configuration information: codec profile like profile_idc...
 - Frame specific information: whether the stream is decodable when starting from this frame, whether the frame is skippable...
@@ -329,8 +309,8 @@ For video, the following configuration information might include:
 For video content, this information can be sent using a Dependency Descriptor header extension.
 In that case, the first RTP packet of the frame will have its start_of_frame equal to 1 and the last packet will have its end_of_frame equal to 1.
 
-Redundancy Technniques Considerations
-=====================================
+Redundancy Techniques Considerations
+====================================
 
 The solution described in this document is expected to integrate well with the existing RTP ecosystem.
 This section describes how the generic packetizer can be used jointly with existing techniques that allow to mitigate unreliable transports.
@@ -349,11 +329,11 @@ Forward Error Correction (FEC) Techniques
 FEC is another technique used in RTP Media Chains to protect media content against packet loss.
 {{RFC5109}} defines such a payload format used to transmit FEC for specific packets protection.
 
-FEC may protect some parts of the media content more than others. For instance, intra frame encoded data or important network abstraction layer units (NALUs) like SPS/PPS may be more protected.
+FEC may protect some parts of the media content more than others. For instance, intra video frame encoded data or important network abstraction layer units (NALUs) like SPS/PPS may be more protected.
 With a post-encoder transform and the use of a generic packetization, the granularity of the recovery mechanism is no longer at the NALU level but at the level of the frame generated by the post-encoder transform.
 In case a SVC codec is used, each spatial layer will be processed as an independent frame. In that case, base layers can be protected more heavily than higher resolution layers.
 
-Redundand Audio Data Techniques
+Redundant Audio Data Techniques
 -------------------------------
 
 As defined in {{RFC7656}} RTP-based redundancy is defined here as a transformation that generates redundant or repair packets sent out as a Redundancy RTP Stream to mitigate Network Transport impairments, like packet loss and delay. 
