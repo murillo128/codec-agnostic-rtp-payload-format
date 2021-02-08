@@ -345,6 +345,101 @@ This allows to use a lower quality encoding of the audio data, should the higher
 
 If a Media Transformation is in use, both the primary and redundant encoding must be transformed independently and the redundant packet created normally. As the RTP headers present in the redundant packet are only applicable to the primary encoding, if the payload type for a redundant encoding block is mapped to the generic packetizer, the value of the associated payload type for the primary encoding is applied to the redundant encoding block as well.
 
+Alternatives
+============
+
+Various alternatives can be used to implement and negotiate generic packetization.
+This section describes a few additional alternatives.
+This section is to be removed before finalization of the document.
+
+Generic Packetization With In-Payload APT
+-----------------------------------------
+
+Instead of using a RTP header extension to convey the APT value, it is prepended in the RTP payload itself.
+As the value cannot change for a whole frame, its value is prepended to the first packet generated of the frame only.
+This removes the need to negotiate a dedicated header extension, but may require the SFU to update the payload when sending or recording content.
+
+A Payload Type for Generic Packetization AND Media Format
+---------------------------------------------------------
+
+The payload type is negotiated in the SDP so as to identify both the negotiated codec format and the generic packetization use.
+There is no network cost but this increases the number of payload types used in the SDP.
+
+```
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=setup:actpass
+a=mid:1
+a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+a=extmap:2 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
+a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
+a=sendrecv
+a=rtpmap:96 vp9/90000
+a=rtpmap:97 generic/90000
+a=fmtp:97 apt=96
+a=rtpmap:98 vp8/90000
+a=rtpmap:99 generic/90000
+a=fmtp:99 apt=98
+a=rtpmap:100 rtx/90000
+a=fmtp:100 apt=96
+a=rtpmap:101 rtx/90000
+a=fmtp:101 apt=97
+a=rtpmap:102 rtx/90000
+a=fmtp:102 apt=98
+a=rtpmap:103 rtx/90000
+a=fmtp:103 apt=99
+```
+Figure 6: SDP example negotiating a payload type for format and generic packetization
+
+A variation of this approach is to consider defining generic payload types, each of them having an identified codec format.
+```
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=setup:actpass
+a=mid:1
+a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+a=extmap:2 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
+a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
+a=sendrecv
+a=rtpmap:96 generic/90000
+a=fmtp:96 codec=vp9
+a=rtpmap:97 generic/90000
+a=fmtp:97 codec=vp8
+a=rtpmap:98 rtx/90000
+a=fmtp:98 apt=96
+a=rtpmap:99 rtx/90000
+a=fmtp:99 apt=97
+```
+Figure 7: SDP example negotiating a payload type for format and generic packetization
+
+A RTP Header To Choose Packetization
+------------------------------------
+
+A RTP header extension can be used to flag content as opaque so that the receiver knows whether to use or not the generic packetization.
+As for the API header extension, the RTP header extension may not need to be sent for every packet, it could for instance be sent for the first packet of every intra video frame.
+The main advantage of this approach is the reduced impact on SDP negotiation.
+```
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=setup:actpass
+a=mid:1
+a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+a=extmap:2 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
+a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
+a=extmap:4 urn:ietf:params:rtp-hdrext:generic-packetization-use
+a=sendrecv
+a=rtpmap:96 vp9/90000
+a=rtpmap:97 vp8/90000
+a=rtpmap:98 rtx/90000
+a=fmtp:98 apt=96
+a=rtpmap:99 rtx/90000
+a=fmtp:99 apt=97
+```
+Figure 8: SDP example negotiating generic packetization as RTP header extension
+
 Security Considerations
 =======================
 
