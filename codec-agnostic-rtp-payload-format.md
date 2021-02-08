@@ -1,4 +1,4 @@
---
+---
 docname: draft-codec-agnostic-rtp-payload-format-00
 title: Codec agnostic RTP payload format for video
 category: std
@@ -20,15 +20,13 @@ author:
   ins: Y. Fablet
   name: Youenn Fablet
   org: Apple Inc.
-  email: youenn@apple.com 
-  
+  email: youenn@apple.com
+
 -
   ins: A. Gouaillard
   name: Alex Gouaillard
   org: CoSMo
   email: alex.gouaillard@cosmosoftware.io
-
-
 
 normative:
   RFC2119:
@@ -71,7 +69,7 @@ Introduction
 As per Figure 1 of {{RFC7656}}, a Media Packetizer transforms a single Encoded Stream into one or several RTP packets.
 The Encoded Stream is coming straight from the Media Encoder and is expected to follow the format produced by the Media Encoder.
 A number of Media Packetizer formats have been designed to process a specific format produced by Media Encoder.
-For instance {{6184}} is dedicated to the processing of content produced by H.264 Media Encoders, and generates packets following NALUs organization.
+For instance {{RFC6184}} is dedicated to the processing of content produced by H.264 Media Encoders, and generates packets following NALUs organization.
 
 WebRTC applications are increasingly deploying end-to-end encryption solutions on top of RTP Media Chains.
 End-to-end encryption is implemented by inserting application-specific Media Transformers between Media Encoder and Media Packetizer on the sending side, and between Media Depacketizer and Media Decoder on the receiving side, as described in Figure 1 and Figure 2.
@@ -215,7 +213,7 @@ In the case of a video codec supporting spatial scalability, each spatial layer 
 
 When the packetizer receives a frame from the application, it MUST fragment the frame content in multiple RTP packets to ensure packets do not exceed the network maximum transmission unit. The content of the frame will be treated as a binary blob by the packetizer, so the decision about the boundaries of each fragment is decided arbitrarily by the packetizer. The packetizer or any relying server MUST NOT modify the frame content and concatenating the RTP payload of the RTP packets for each frame MUST produce the exact binary content of the input frame content.
 
-The marker bit of each RTP packet in a frame MUST be set according to the audio and video profiles specified in [[RFC3551]].
+The marker bit of each RTP packet in a frame MUST be set according to the audio and video profiles specified in {{RFC3551}}.
 
 The spatial layer frames are sent in ascending order, with the same RTP timestamp, and only the last RTP packet of the last spatial layer frame will have the marker bit set to 1.
 
@@ -227,7 +225,7 @@ That requires to identify the original payload type code of the frame negotiated
 The APT value is the payload type code of the associated format passed to the generic Media Packetizer before any transformation is applied.
 
 The APT value is sent in a dedicated header extension.
-The payload of this header extension can be encoded using either the one-byte or two-byte header defined in [[RFC5285]].
+The payload of this header extension can be encoded using either the one-byte or two-byte header defined in {{RFC5285}}.
 Figures 3 and 4 show examples with each one of these examples.
 
 ```
@@ -443,7 +441,7 @@ Figure 8: SDP example negotiating generic packetization as RTP header extension
 Security Considerations
 =======================
 
-RTP packets using the payload format defined in this specification are subject to the general security considerations discussed in [[RFC3350]].
+RTP packets using the payload format defined in this specification are subject to the general security considerations discussed in {{RFC3550}}.
 It is not expected that the proposed solutions (generic packetization and header extension) presented in this document can create new security threats.
 The use and implementation of RTP Media Chains containing Media Transformers needs to be done carerefully.
 It is important to refer to the security considerations discussed in {{SFrame}} and {{WebRTCInsertableStreams}}.
@@ -453,7 +451,7 @@ Similarly, since Media Transformers can be implemented as JavaScript in browsers
 IANA Considerations
 ===================
 
-Two new media subtypes have been registered with IANA, as described in this section.  This registration is done using the registration template {{REF}} and following [[RFC3555]].
+Two new media subtypes have been registered with IANA, as described in this section.
 
 ## Registration of audio/generic
 
@@ -465,7 +463,7 @@ Two new media subtypes have been registered with IANA, as described in this sect
 
    Optional parameters: none
 
-   Encoding considerations: This format is framed (see Section 4.8 in the template document [3]) and contains binary data.
+   Encoding considerations: This format is framed (see Section 4.8 in the template document) and contains binary data.
 
    Security considerations: TBD.
 
@@ -495,7 +493,7 @@ Two new media subtypes have been registered with IANA, as described in this sect
 
    Optional parameters: none
 
-   Encoding considerations: This format is framed (see Section 4.8 in the template document [3]) and contains binary data.
+   Encoding considerations: This format is framed (see Section 4.8 in the template document) and contains binary data.
 
    Security considerations: TBD.
 
