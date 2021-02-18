@@ -24,7 +24,7 @@ author:
 
 -
   ins: A. Gouaillard
-  name: Alex Gouaillard
+  name: Alexandre Gouaillard
   org: CoSMo
   email: alex.gouaillard@cosmosoftware.io
 
@@ -56,10 +56,23 @@ informative:
 --- abstract
 
 RTP Media Chains usually rely on piping encoder output directly to packetizers. Media packetization formats often support a specific codec format and optimize RTP packets generation accordingly.
-With the development of Selective Forward Unit (SFU) solutions, RTP Media Chains used in WebRTC solutions are increasingly relying on application-specific transforms that seat between encoder and packetizer on one end and between depacketizer and decoder on the other end. These transforms are typically encrypting media content so that the media content is not readable from the SFU, for instance using {{SFrame}} or {{WebRTCInsertableStreams}}.
-In that context, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format.
-This document provides a solution to that problem by describing a generic RTP packetization format that can be used on any media content, and how to negotiate use of this format.
+
+With the development of Selective Forward Unit (SFU) solutions, that do not process media content server side, the need for media content processing at the origin and at the destination has arised.
+
+RTP Media Chains used e.g. in WebRTC solutions are increasingly relying on application-specific transforms that sit in-between encoder and packetizer on one end and in-between depacketizer and decoder on the other end. This use case has become so important, that the W3C is standardizing the capacity to access encoded content with the {{WebRTCInsertableStreams}} API proposal. An extremely popular use case is encryption of media content for instance using {{SFrame}}.
+
+Whatever the mmodification of the media content, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format. In the extreme cases like encryption, where the RTP Payload is made completely opaque to the SFU, some extra mechanism must also be added for SFUs to be able to route the packets.
+
+The traditionnal process of creating a new RTP Payload spec per content woul dnot be practical as we would need to make a new one for each codec-transform pair.
+
+This document describes a solution, already implemented in some browsers and SFUs, which provides the following features in the case the encoded content has been modified before reaching the packetizer:
+- a paylaod agnostic RTP packetization format that can be used on any media content,
+- a signalling mechanism for the above format,
+Both of the above mechanism are backward compatible with most of (S)RTP/RTCP mechanisms used for bandwidth estimation and congestion control in RTP/SRTP/webrtc, including but not limited to SSRC, RED, FEC, RTX, NACK, SR/RR, REMB, transport-wide-CC, TIMBR, .... as illustrated by existing implementation.
+
 This document also describes a solution to allow SFUs to continue performing packet routing on top of this generic RTP packetization format.
+
+This document complements the SFrame (media encryption), and Dependency Descriptor (AV1 payload annex) documents to provide an End-to-End-Encryption solution that would sit on top of SRTP/Webrtc, use SFUs on the media back-end, and leverage W3C APIs in the browser. 
 
 --- middle
 
@@ -76,7 +89,7 @@ End-to-end encryption is implemented by inserting application-specific Media Tra
 To support end-to-end encryption, Media Transformers can use the {{SFrame}} format.
 In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting JavaScript code provided by web pages.
 
-```
+``
                 Physical Stimulus
                       |
                       V
