@@ -17,12 +17,6 @@ author:
   email: sergio.garcia.murillo@cosmosoftware.io
 
 -
-  ins: Y. Fablet
-  name: Youenn Fablet
-  org: Apple Inc.
-  email: youenn@apple.com
-
--
   ins: A. Gouaillard
   name: Alexandre Gouaillard
   org: CoSMo
