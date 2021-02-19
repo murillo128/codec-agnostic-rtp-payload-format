@@ -23,22 +23,22 @@ author:
   email: alex.gouaillard@cosmosoftware.io
 
 normative:
-  RFC2119:
+  // RFC2119:
   RFC3550:
   RFC3551:
-  RFC3711:
-  RFC4566:
+  // RFC3711:
+  // RFC4566:
   RFC5285:
   RFC7656:
-  RFC8285:
+  // RFC8285:
 
 informative:
   RFC2198:
   RFC4588:
   RFC5109:
-  RFC6464:
-  RFC6465:
-  RFC6904:
+  // RFC6464:
+  // RFC6465:
+  // RFC6904:
   RFC6184:
   SFrame:
     target: https://tools.ietf.org/html/draft-omara-sframe
