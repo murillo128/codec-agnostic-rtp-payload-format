@@ -86,106 +86,106 @@ To support end-to-end encryption, Media Transformers can use the {{SFrame}} form
 In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting JavaScript code provided by web pages.
 
 ~~~~
-                Physical Stimulus
-                      |
-                      V
-           +----------------------+
-           |     Media Capture    |
-           +----------------------+
-                      |
-                 Raw Stream
-                      V
-           +----------------------+
-           |     Media Source     |<-- Synchronization Timing
-           +----------------------+
-                      |
-                Source Stream
-                      V
-           +----------------------+
-           |    Media Encoder     |
-           +----------------------+
-                      |
-                Encoded Stream 
-                      V
-           +----------------------+
-           |   Media Transformer  |<-- NEW: application-specific transform
-           +----------------------+         (e.g. SFrame Encryption)
-                      |
-              Transformed Stream    +------------+
-                      V             |            V
-           +----------------------+ | +----------------------+
-           |   Media Packetizer   | | | RTP-Based Redundancy |
-           +----------------------+ | +----------------------+
-                      |             |            |
-                      +-------------+  Redundancy RTP Stream
-               Source RTP Stream                 |
-                      V                          V
-           +----------------------+   +----------------------+
-           |  RTP-Based Security  |   |  RTP-Based Security  |
-           +----------------------+   +----------------------+
-                      |                          |
-              Secured RTP Stream   Secured Redundancy RTP Stream
-                      V                          V
-           +----------------------+   +----------------------+
-           |   Media Transport    |   |   Media Transport    |
-           +----------------------+   +----------------------+
+          Physical Stimulus
+                   |
+                   V
+        +----------------------+
+        |     Media Capture    |
+        +----------------------+
+                   |
+              Raw Stream
+                   V
+        +----------------------+
+        |     Media Source     |<-- Synchronization Timing
+        +----------------------+
+                   |
+             Source Stream
+                   V
+        +----------------------+
+        |    Media Encoder     |
+        +----------------------+
+                   |
+             Encoded Stream 
+                   V
+        +----------------------+
+        |   Media Transformer  |<-- NEW: application-specific transform
+        +----------------------+         (e.g. SFrame Encryption)
+                   |
+           Transformed Stream    +------------+
+                   V             |            V
+        +----------------------+ | +----------------------+
+        |   Media Packetizer   | | | RTP-Based Redundancy |
+        +----------------------+ | +----------------------+
+                   |             |            |
+                   +-------------+  Redundancy RTP Stream
+            Source RTP Stream                 |
+                   V                          V
+        +----------------------+   +----------------------+
+        |  RTP-Based Security  |   |  RTP-Based Security  |
+        +----------------------+   +----------------------+
+                   |                          |
+           Secured RTP Stream   Secured Redundancy RTP Stream
+                   V                          V
+        +----------------------+   +----------------------+
+        |   Media Transport    |   |   Media Transport    |
+        +----------------------+   +----------------------+
 ~~~~
-             Figure 1: Sender Side Concepts in the Media Chain
+          Figure 1: Sender Side Concepts in the Media Chain
              With Application-level Media Transform
 
 These RTP packets are sent over the wire to a receiver media chain matching the sender side, reaching the Media Depacketizer that will reconstruct the Encoded Stream before passing it to the Media Decoder.
 
 ~~~
-          +----------------------+   +----------------------+
-          |   Media Transport    |   |   Media Transport    |
-          +----------------------+   +----------------------+
-            Received |                 Received | Secured
-            Secured RTP Stream       Redundancy RTP Stream
-                     V                          V
-          +----------------------+   +----------------------+
-          | RTP-Based Validation |   | RTP-Based Validation |
-          +----------------------+   +----------------------+
-                     |                          |
-            Received RTP Stream   Received Redundancy RTP Stream
-                     |                          |
-                     |     +--------------------+
-                     V     V
-          +----------------------+
-          |   RTP-Based Repair   |
-          +----------------------+
-                     |
-            Repaired RTP Stream
-                     V
-          +----------------------+
-          |  Media Depacketizer  |
-          +----------------------+
-                     |
-         Received Transformed Stream
-                     V
-          +----------------------+
-          |   Media Transformer  |<-- NEW: application-specific transform
-          +----------------------+         (e.g. SFrame Decryption)
-                     |
-           Received Encoded Stream
-                     V
-          +----------------------+
-          |    Media Decoder     |
-          +----------------------+
-                     |
-           Received Source Stream
-                     V
-          +----------------------+
-          |      Media Sink      |--> Synchronization Information
-          +----------------------+
-                     |
-            Received Raw Stream
-                     V
-          +----------------------+
-          |     Media Render     |
-          +----------------------+
-                     |
-                     V
-             Physical Stimulus
+       +----------------------+   +----------------------+
+       |   Media Transport    |   |   Media Transport    |
+       +----------------------+   +----------------------+
+         Received |                 Received | Secured
+         Secured RTP Stream       Redundancy RTP Stream
+                  V                          V
+       +----------------------+   +----------------------+
+       | RTP-Based Validation |   | RTP-Based Validation |
+       +----------------------+   +----------------------+
+                  |                          |
+         Received RTP Stream   Received Redundancy RTP Stream
+                  |                          |
+                  |     +--------------------+
+                  V     V
+       +----------------------+
+       |   RTP-Based Repair   |
+       +----------------------+
+                  |
+         Repaired RTP Stream
+                  V
+       +----------------------+
+       |  Media Depacketizer  |
+       +----------------------+
+                  |
+      Received Transformed Stream
+                  V
+       +----------------------+
+       |   Media Transformer  |<-- NEW: application-specific transform
+       +----------------------+         (e.g. SFrame Decryption)
+                  |
+        Received Encoded Stream
+                  V
+       +----------------------+
+       |    Media Decoder     |
+       +----------------------+
+                  |
+        Received Source Stream
+                  V
+       +----------------------+
+       |      Media Sink      |--> Synchronization Information
+       +----------------------+
+                  |
+         Received Raw Stream
+                  V
+       +----------------------+
+       |     Media Render     |
+       +----------------------+
+                  |
+                  V
+          Physical Stimulus
 ~~~
              Figure 2: Receiver Side Concepts in the Media Chain
              With Application-level Media Transform
