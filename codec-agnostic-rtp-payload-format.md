@@ -13,13 +13,13 @@ author:
 -
   ins: S. Garcia Murillo
   name: Sergio Garcia Murillo
-  org: CoSMo
+  org: CoSMo Software
   email: sergio.garcia.murillo@cosmosoftware.io
 
 -
   ins: A. Gouaillard
   name: Alexandre Gouaillard
-  org: CoSMo
+  org: CoSMo Software
   email: alex.gouaillard@cosmosoftware.io
 
 normative:
@@ -53,20 +53,22 @@ RTP Media Chains usually rely on piping encoder output directly to packetizers. 
 
 With the development of Selective Forward Unit (SFU) solutions, that do not process media content server side, the need for media content processing at the origin and at the destination has arised.
 
-RTP Media Chains used e.g. in WebRTC solutions are increasingly relying on application-specific transforms that sit in-between encoder and packetizer on one end and in-between depacketizer and decoder on the other end. This use case has become so important, that the W3C is standardizing the capacity to access encoded content with the {{WebRTCInsertableStreams}} API proposal. An extremely popular use case is encryption of media content for instance using {{SFrame}}.
+RTP Media Chains used e.g. in WebRTC solutions are increasingly relying on application-specific transforms that sit in-between encoder and packetizer on one end and in-between depacketizer and decoder on the other end. This use case has become so important, that the W3C is standardizing the capacity to access encoded content with the {{WebRTCInsertableStreams}} API proposal. An extremely popular use case is application level end-to-end encryption of media content, using for instance {{SFrame}}.
 
-Whatever the mmodification of the media content, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format. In the extreme cases like encryption, where the RTP Payload is made completely opaque to the SFU, some extra mechanism must also be added for SFUs to be able to route the packets.
+Whatever the modification applied to the media content, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format.
 
-The traditionnal process of creating a new RTP Payload spec per content woul dnot be practical as we would need to make a new one for each codec-transform pair.
+In the extreme cases like encryption, where the RTP Payload is made completely opaque to the SFUs, some extra mechanism must also be added for them to be able to route the packets without depending on RTP payload or payload headers.
 
-This document describes a solution, already implemented in some browsers and SFUs, which provides the following features in the case the encoded content has been modified before reaching the packetizer:
+The traditionnal process of creating a new RTP Payload specification per content would not be practical as we would need to make a new one for each codec-transform pair.
+
+This document describes a solution, which provides the following features in the case the encoded content has been modified before reaching the packetizer:
 - a paylaod agnostic RTP packetization format that can be used on any media content,
-- a signalling mechanism for the above format,
-Both of the above mechanism are backward compatible with most of (S)RTP/RTCP mechanisms used for bandwidth estimation and congestion control in RTP/SRTP/webrtc, including but not limited to SSRC, RED, FEC, RTX, NACK, SR/RR, REMB, transport-wide-CC, TIMBR, .... as illustrated by existing implementation.
+- a signalling mechanism for the above format and the inner payload,
+Both of the above mechanism are backward compatible with most of (S)RTP/RTCP mechanisms used for bandwidth estimation and congestion control in RTP/SRTP/webrtc, including but not limited to SSRC, RED, FEC, RTX, NACK, SR/RR, REMB, transport-wide-CC, TIMBR, .... It as illustrated by existing implementations in chrome, safari, and Medooze.
 
 This document also describes a solution to allow SFUs to continue performing packet routing on top of this generic RTP packetization format.
 
-This document complements the SFrame (media encryption), and Dependency Descriptor (AV1 payload annex) documents to provide an End-to-End-Encryption solution that would sit on top of SRTP/Webrtc, use SFUs on the media back-end, and leverage W3C APIs in the browser. 
+This document complements the SFrame (media encryption), and Dependency Descriptor (AV1 payload annex) documents to provide an End-to-End-Encryption solution that would sit on top of SRTP/Webrtc, use SFUs on the media back-end, and leverage W3C APIs in the browser. A high level description of such system will be provided as an informational I-D in the SFrame WG and then cited here.
 
 --- middle
 
@@ -82,6 +84,7 @@ WebRTC applications are increasingly deploying end-to-end encryption solutions o
 End-to-end encryption is implemented by inserting application-specific Media Transformers between Media Encoder and Media Packetizer on the sending side, and between Media Depacketizer and Media Decoder on the receiving side, as described in Figure 1 and Figure 2.
 To support end-to-end encryption, Media Transformers can use the {{SFrame}} format.
 In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting JavaScript code provided by web pages.
+
 
 ``
                 Physical Stimulus
@@ -132,6 +135,7 @@ In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}
              With Application-level Media Transform
 
 These RTP packets are sent over the wire to a receiver media chain matching the sender side, reaching the Media Depacketizer that will reconstruct the Encoded Stream before passing it to the Media Decoder.
+
 ```
           +----------------------+   +----------------------+
           |   Media Transport    |   |   Media Transport    |
@@ -398,6 +402,7 @@ a=fmtp:103 apt=99
 Figure 6: SDP example negotiating a payload type for format and generic packetization
 
 A variation of this approach is to consider defining generic payload types, each of them having an identified codec format.
+
 ```
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
@@ -425,6 +430,7 @@ A RTP Header To Choose Packetization
 A RTP header extension can be used to flag content as opaque so that the receiver knows whether to use or not the generic packetization.
 As for the API header extension, the RTP header extension may not need to be sent for every packet, it could for instance be sent for the first packet of every intra video frame.
 The main advantage of this approach is the reduced impact on SDP negotiation.
+
 ```
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
