@@ -63,8 +63,8 @@ The traditionnal process of creating a new RTP Payload specification per content
 
 This document describes a solution, which provides the following features in the case the encoded content has been modified before reaching the packetizer:
 - a paylaod agnostic RTP packetization format that can be used on any media content,
-- a signalling mechanism for the above format and the inner payload,
-Both of the above mechanism are backward compatible with most of (S)RTP/RTCP mechanisms used for bandwidth estimation and congestion control in RTP/SRTP/webrtc, including but not limited to SSRC, RED, FEC, RTX, NACK, SR/RR, REMB, transport-wide-CC, TIMBR, .... It as illustrated by existing implementations in chrome, safari, and Medooze.
+- a negotiation mechanism for the above format and the inner payload,
+Both of the above mechanism are backward compatible with most of (S)RTP/RTCP mechanisms used for bandwidth estimation and congestion control in RTP/SRTP/webrtc, including but not limited to SSRC, RED, FEC, RTX, NACK, SR/RR, REMB, transport-wide-CC, TMBR, .... It as illustrated by existing implementations in chrome, safari, and Medooze.
 
 This document also describes a solution to allow SFUs to continue performing packet routing on top of this generic RTP packetization format.
 
@@ -221,7 +221,7 @@ The content of each transformed frame is then processed by the packetizer.
 
 In the case of a video codec supporting spatial scalability, each spatial layer MUST be split in its own frame by the application before passing it to the packetizer. 
 
-When the packetizer receives a frame from the application, it MUST fragment the frame content in multiple RTP packets to ensure packets do not exceed the network maximum transmission unit. The content of the frame will be treated as a binary blob by the packetizer, so the decision about the boundaries of each fragment is decided arbitrarily by the packetizer. The packetizer or any relying server MUST NOT modify the frame content and concatenating the RTP payload of the RTP packets for each frame MUST produce the exact binary content of the input frame content.
+When the packetizer receives a frame from the application, it MUST fragment the frame content in multiple RTP packets to ensure packets do not exceed the network maximum transmission unit. The content of the frame will be treated as a binary blob by the packetizer, so the decision about the boundaries of each fragment is decided arbitrarily by the packetizer. The packetizer or any relaying server MUST NOT modify the frame content and concatenating the RTP payload of the RTP packets for each frame MUST produce the exact binary content of the input frame content.
 
 The marker bit of each RTP packet in a frame MUST be set according to the audio and video profiles specified in {{RFC3551}}.
 
