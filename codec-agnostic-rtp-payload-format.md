@@ -1,5 +1,5 @@
 ---
-docname: draft-codec-agnostic-rtp-payload-format-00
+docname: draft-gouaillard-avtcore-codec-agn-rtp-payload-format-01
 title: Codec agnostic RTP payload format for video
 category: std
 ipr: trust200902
