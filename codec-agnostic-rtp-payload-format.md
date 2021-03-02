@@ -14,12 +14,19 @@ author:
   ins: S. Garcia Murillo
   name: Sergio Garcia Murillo
   org: CoSMo Software
+  country: Spain
   email: sergio.garcia.murillo@cosmosoftware.io
-
+-
+  ins: Y. Fablet		
+  name: Youenn Fablet		
+  org: Apple Inc.
+  country: France
+  email: youenn@apple.com
 -
   ins: A. Gouaillard
   name: Alexandre Gouaillard
   org: CoSMo Software
+  country: Singapore
   email: alex.gouaillard@cosmosoftware.io
 
 normative:
