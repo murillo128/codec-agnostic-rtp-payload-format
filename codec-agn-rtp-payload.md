@@ -1,5 +1,5 @@
 ---
-docname: draft-gouaillard-avtcore-codec-agn-rtp-payload-format-01
+docname: draft-gouaillard-avtcore-codec-agn-rtp-payload-01
 title: Codec agnostic RTP payload format for video
 category: std
 ipr: trust200902
@@ -14,19 +14,16 @@ author:
   ins: S. Garcia Murillo
   name: Sergio Garcia Murillo
   org: CoSMo Software
-  country: Spain
   email: sergio.garcia.murillo@cosmosoftware.io
 -
   ins: Y. Fablet		
   name: Youenn Fablet		
   org: Apple Inc.
-  country: France
   email: youenn@apple.com
 -
   ins: A. Gouaillard
   name: Alexandre Gouaillard
   org: CoSMo Software
-  country: Singapore
   email: alex.gouaillard@cosmosoftware.io
 
 normative:
