@@ -1,2 +1,2 @@
-# codec-agnostic-rtp-payload-format
-Codec agnostic RTP payload format
+# multi-codec-rtp-payload-format
+Multi Codec RTP payload format
