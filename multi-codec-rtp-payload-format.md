@@ -56,7 +56,7 @@ informative:
 --- abstract
 
 RTP Media Chains usually rely on piping encoder output directly to packetizers. Media packetization formats often support a specific codec format and optimize RTP packets generation accordingly.
-With the development of Selective Forward Unit (SFU) solutions, RTP Media Chains used in WebRTC solutions are increasingly relying on application-specific transforms that seat between encoder and packetizer on one end and between depacketizer and decoder on the other end. These transforms are typically encrypting media content so that the media content is not readable from the SFU, for instance using {{SFrame}} or {{WebRTCInsertableStreams}}.
+With the development of Selective Forward Unit (SFU) solutions, RTP Media Chains used in WebRTC solutions are increasingly relying on application-specific transforms that sit between encoder and packetizer on one end and between depacketizer and decoder on the other end. These transforms are typically encrypting media content so that the media content is not readable from the SFU, for instance using {{SFrame}} or {{WebRTCInsertableStreams}}.
 In that context, RTP packetizers can no longer expect to use packetization formats that mandate media content to be in a specific codec format.
 This document provides a solution to that problem by describing a RTP packetization format that can be used for many media content, and how to negotiate use of this format.
 This document also describes a solution to allow SFUs to continue performing packet routing on top of this RTP packetization format.
@@ -294,7 +294,7 @@ SFU Packet Selection
 
 SFUs need to have a basic understanding of each frame they receive so they can decide to forward it or not and to which endpoint.
 They might need similar information to support media content recording.
-This information is either generic to a group of frame (called a stream hereafter) or specific to each frame.
+This information is either generic to a group of frames (called a stream hereafter) or specific to each frame.
 
 The information is transmitted as a RTP header extension as the RTP packet payload should be treated as opaque by the SFU.
 This is especially necessary if the payload is end-to-end encrypted.
@@ -457,7 +457,7 @@ Security Considerations
 
 RTP packets using the payload format defined in this specification are subject to the general security considerations discussed in {{RFC3550}}.
 It is not expected that the proposed solution presented in this document can create new security threats.
-The use and implementation of RTP Media Chains containing Media Transformers needs to be done carerefully.
+The use and implementation of RTP Media Chains containing Media Transformers needs to be done carefully.
 It is important to refer to the security considerations discussed in {{SFrame}} and {{WebRTCInsertableStreams}}.
 In particular Media Transformers on the receiver side need to be prepared to receive arbitrary content, like decoders already do.
 Similarly, since Media Transformers can be implemented as JavaScript in browsers, RTP Packetizers should be prepared to receive arbitrary content.
