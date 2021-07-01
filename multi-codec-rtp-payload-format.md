@@ -306,8 +306,22 @@ For video, configuration information might include:
 - Codec specific configuration information: codec profile like profile_idc...
 - Frame specific information: whether the stream is decodable when starting from this frame, whether the frame is skippable...
 
-For video content, this information can be sent using a Dependency Descriptor header extension.
+For video content, this information is sent using a Dependency Descriptor header extension.
 In that case, the first RTP packet of the frame will have its start_of_frame equal to 1 and the last packet will have its end_of_frame equal to 1.
+
+Sender Processing Rules
+=======================
+
+The sender identifies the use of the multi-codec payload format by using the urn:ietf:params:rtp-hdrext:associated-payload-type extension.
+When doing so, the sender follows these additional rules:
+- For audio content, the associated payload type MUST reference an audio codec in the supported audio codec list.
+  The supported audio codec list contains the audio codecs enumerated in {{RFC7874}}. This list may be extended in future versions of this specification.
+- For video content, H.264 and VP8 are supported as described in {{7742}}, as well as VP9 and AV.1.
+  In the case scalable video coding is used, the sender MUST generate a Dependency Descriptor header extension.
+  This requires the associated payload type to reference a video codec that can be described using the Dependency Descriptor header extension.
+  This also requires the sender to split the video encoder output in frames that can each be described using the Dependency Descriptor header extension.
+
+These rules apply to both the originator of the content as well as SFUs that might route the content to end receivers.
 
 Redundancy Techniques Considerations
 ====================================
