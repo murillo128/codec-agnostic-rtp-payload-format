@@ -316,8 +316,8 @@ The sender identifies the use of the multi-codec payload format by using the urn
 When doing so, the sender follows these additional rules:
 - For audio content, the associated payload type MUST reference an audio codec in the supported audio codec list.
   The supported audio codec list contains the audio codecs enumerated in {{RFC7874}}. This list may be extended in future versions of this specification.
-- For video content, the sender MUST generate a Dependency Descriptor header extension.
-  This requires the associated payload type to reference a video codec that can be described using the Dependency Descriptor header extension.
+- For video content, the sender MUST generate a Dependency Descriptor header extension in case scalable video coding is used.
+  In that case, this requires the associated payload type to reference a video codec that can be described using the Dependency Descriptor header extension.
   This also requires the sender to split the video encoder output in frames that can each be described using the Dependency Descriptor header extension.
 
 These rules apply to both the originator of the content as well as SFUs that might route the content to end receivers.
