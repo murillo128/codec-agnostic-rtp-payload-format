@@ -1,5 +1,5 @@
 ---
-docname: draft-multi-codec-rtp-payload-format-00
+docname: draft-murillo-avtcore-multi-codec-payload-format-01
 title: Multi Codec RTP payload format
 category: std
 ipr: trust200902
