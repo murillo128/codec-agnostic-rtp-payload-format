@@ -27,6 +27,12 @@ author:
   name: Alex Gouaillard
   org: CoSMo
   email: alex.gouaillard@cosmosoftware.io
+  
+-
+  ins: J. Uberti
+  name: Justin Uberti
+  org: Clubhouse
+  email: justin@uberti.name
 
 normative:
   RFC2119:
