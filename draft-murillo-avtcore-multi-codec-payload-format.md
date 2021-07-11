@@ -1,5 +1,5 @@
 ---
-docname: draft-murillo-avtcore-multi-codec-payload-format-00
+docname: draft-murillo-avtcore-multi-codec-payload-format-01
 title: Multi Codec RTP payload format
 category: std
 ipr: trust200902
@@ -84,7 +84,7 @@ End-to-end encryption is implemented by inserting application-specific Media Tra
 To support end-to-end encryption, Media Transformers can use the {{SFrame}} format.
 In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}}, for instance by injecting JavaScript code provided by web pages.
 
-```
+~~~~~
                 Physical Stimulus
                       |
                       V
@@ -128,12 +128,12 @@ In browsers, Media Transformers are implemented using {{WebRTCInsertableStreams}
            +----------------------+   +----------------------+
            |   Media Transport    |   |   Media Transport    |
            +----------------------+   +----------------------+
-```
-             Figure 1: Sender Side Concepts in the Media Chain
-             With Application-level Media Transform
+~~~~~
+{: title="Sender side concepts in the Media Chain with application-level Media Transform"}
 
 These RTP packets are sent over the wire to a receiver media chain matching the sender side, reaching the Media Depacketizer that will reconstruct the Encoded Stream before passing it to the Media Decoder.
-```
+
+~~~~~
           +----------------------+   +----------------------+
           |   Media Transport    |   |   Media Transport    |
           +----------------------+   +----------------------+
@@ -184,9 +184,8 @@ These RTP packets are sent over the wire to a receiver media chain matching the 
                      |
                      V
              Physical Stimulus
-```
-             Figure 2: Receiver Side Concepts in the Media Chain
-             With Application-level Media Transform
+~~~~~
+{: title="Receiver side concepts in the Media Chain with application-level Media Transform"}
  
 This packetization does not change how the mapping between one or several encoded or dependant streams are mapped to the RTP streams or how the synchronization sources(s) (SSRC) are assigned. 
 
@@ -236,23 +235,23 @@ The APT value is sent in a dedicated header extension.
 The payload of this header extension can be encoded using either the one-byte or two-byte header defined in {{RFC5285}}.
 Figures 3 and 4 show examples with each one of these examples.
 
-```
+~~~~~
                     0                   1
                     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                    |  ID   | len=0 |S|     APT     |
                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-```
-Figure 3: Frame Associated Payload Type Encoding Using the One-Byte Header Format
+~~~~~
+{: title="Frame associated payload type encoding using the One-Byte header format"}
 
-```
+~~~~~
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      |      ID       |     len=1     |S|     APT     |    0 (pad)    |
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-```
-Figure 4: Frame Associated Payload Type Encoding Using the Two-Byte Header Format
+~~~~~
+{: title="Frame associated payload type encoding using the Two-Byte header format"}
 
 The APT value is the associated payload type value.
 The S bit indicates if the media stream can be forwarded safely starting from this RTP packet.
@@ -274,7 +273,7 @@ Only the negotiated payload types are allowed to be used as associated payload t
 Figure 5 illustrates a SDP that negotiates exchange of video using either VP8 or VP9 codecs with the possibility to use the multi-codec packetization.
 In this example, RTX is also negotiated and will be applied normally on each associated payload type.
 
-```
+~~~~~
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
 a=rtcp:9 IN IP4 0.0.0.0
@@ -294,8 +293,8 @@ a=rtpmap:100 rtx/90000
 a=fmtp:100 apt=97
 a=rtpmap:101 rtx/90000
 a=fmtp:101 apt=98
-```
-Figure 5: SDP example negotiating the multi-codec payload type and related header extension for video
+~~~~~
+{: title="SDP example negotiating the multi-codec payload type and related header extension for video"}
 
 SFU Packet Selection
 ====================
@@ -385,7 +384,7 @@ A Payload Type for Generic Packetization AND Media Format
 The payload type is negotiated in the SDP so as to identify both the negotiated codec format and the multi-codec packetization use.
 There is no network cost but this increases the number of payload types used in the SDP.
 
-```
+~~~~~
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
 a=rtcp:9 IN IP4 0.0.0.0
@@ -409,11 +408,12 @@ a=rtpmap:102 rtx/90000
 a=fmtp:102 apt=98
 a=rtpmap:103 rtx/90000
 a=fmtp:103 apt=99
-```
-Figure 6: SDP example negotiating a payload type for format and multi-codec packetization
+~~~~~
+{: title="SDP example negotiating a payload type for format and multi-codec packetization"}
 
 A variation of this approach is to consider defining several multi-codec payload types, each of them having an identified codec format.
-```
+
+~~~~~
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
 a=rtcp:9 IN IP4 0.0.0.0
@@ -431,8 +431,8 @@ a=rtpmap:98 rtx/90000
 a=fmtp:98 apt=96
 a=rtpmap:99 rtx/90000
 a=fmtp:99 apt=97
-```
-Figure 7: SDP example negotiating a payload type for format and multi-codec packetization
+~~~~~
+{: title="Alternative SDP example negotiating a payload type for format and multi-codec packetization"}
 
 A RTP Header To Choose Packetization
 ------------------------------------
@@ -440,7 +440,8 @@ A RTP Header To Choose Packetization
 A RTP header extension can be used to flag content as opaque so that the receiver knows whether to use or not the multi-codec packetization.
 As for the API header extension, the RTP header extension may not need to be sent for every packet, it could for instance be sent for the first packet of every intra video frame.
 The main advantage of this approach is the reduced impact on SDP negotiation.
-```
+
+~~~~~
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101
 c=IN IP4 0.0.0.0
 a=rtcp:9 IN IP4 0.0.0.0
@@ -457,8 +458,8 @@ a=rtpmap:98 rtx/90000
 a=fmtp:98 apt=96
 a=rtpmap:99 rtx/90000
 a=fmtp:99 apt=97
-```
-Figure 8: SDP example negotiating multi-codec packetization as RTP header extension
+~~~~~
+{: title="SDP example negotiating multi-codec packetization as RTP header extension"}
 
 Security Considerations
 =======================
