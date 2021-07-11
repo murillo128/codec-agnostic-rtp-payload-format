@@ -52,6 +52,8 @@ informative:
   RFC6465:
   RFC6904:
   RFC6184:
+  RFC7742:
+  RFC7874:
   SFrame:
     target: https://tools.ietf.org/html/draft-omara-sframe
     title: Secure Frame (SFrame)
